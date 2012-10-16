@@ -66,13 +66,10 @@ public class MediaButtonMonitorService //
             //&& !receiverName.equals("com.harleensahni.android.mbr/com.harleensahni.android.mbr.ReceiverSelector$1")
             )
             {
-                /*
-                SharedPreferences preferences =
-                    PreferenceManager.getDefaultSharedPreferences(mMonitorService.getApplicationContext());
-                preferences.edit().putString(Constants.LAST_MEDIA_BUTTON_RECEIVER, receiverName).commit();
-                Log.d(TAG, "Set LAST_MEDIA_BUTTON_RECEIVER to" + receiverName);
+                //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mMonitorService.getApplicationContext());
+                //preferences.edit().putString(Constants.LAST_MEDIA_BUTTON_RECEIVER, receiverName).commit();
+                //Log.d(TAG, "Set LAST_MEDIA_BUTTON_RECEIVER to " + receiverName);
                 mMonitorService.registerMediaButtonEventReceiver();
-                */
             }
         }
     }
