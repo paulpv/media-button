@@ -1,5 +1,8 @@
 package com.twistpair.wave.experimental.mediabutton;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -11,13 +14,19 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class MediaButtonMonitorService //
                 extends Service
 {
-    private static final String  TAG = MediaButtonMonitorService.class.getSimpleName();
+    private static final String  TAG                  = MediaButtonMonitorService.class.getSimpleName();
 
+    private static final int     NOTIFICATION_STARTED = 1;
+    private static final int     NOTIFICATION_RUNNING = 2;
+    private static final int     NOTIFICATION_STOPPED = 3;
+
+    private NotificationManager  mNotificationManager;
     private SettingsObserver     mSettingsObserver;
     private ComponentName        mComponentName;
     private AudioManager         mAudioManager;
@@ -84,6 +93,7 @@ public class MediaButtonMonitorService //
     public void onCreate()
     {
         Log.d(TAG, "onCreate()");
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mComponentName = new ComponentName(getPackageName(), MediaButtonReceiver.class.getName());
         mSettingsObserver = new SettingsObserver(this);
@@ -97,6 +107,23 @@ public class MediaButtonMonitorService //
         mSettingsObserver.start();
         registerReceiver(mMediaHeadsetReceiver, mMediaHeadsetReceiver.getFilter());
         registerMediaButtonEventReceiver();
+
+        intent = new Intent(this, MainActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, NOTIFICATION_STARTED, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this) //
+        .setSmallIcon(R.drawable.ic_launcher) //
+        .setContentTitle("Title: Started") //
+        .setContentText("Text: Started") //
+        .setContentInfo("Info: Started") //
+        .setTicker("Ticker: Started") //
+        .setContentIntent(pi) //
+        .build();
+        mNotificationManager.notify(NOTIFICATION_STARTED, notification);
+        //startForeground(NOTIFICATION_STARTED, notification);
+
+        notifyRunning();
+
         return START_STICKY;
     }
 
@@ -104,6 +131,21 @@ public class MediaButtonMonitorService //
     public void onDestroy()
     {
         Log.d(TAG, "onDestroy()");
+
+        mNotificationManager.cancel(NOTIFICATION_RUNNING);
+
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, NOTIFICATION_STOPPED, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this) //
+        .setSmallIcon(R.drawable.ic_launcher) //
+        .setContentTitle("Title: Stopped") //
+        .setContentText("Text: Stopped") //
+        .setContentInfo("Info: Stopped") //
+        .setTicker("Ticker: Stopped") //
+        .setContentIntent(pi) //
+        .build();
+        mNotificationManager.notify(NOTIFICATION_STOPPED, notification);
 
         if (mMediaHeadsetReceiver != null)
         {
@@ -118,6 +160,23 @@ public class MediaButtonMonitorService //
         }
 
         unregisterMediaButtonEventReceiver();
+    }
+
+    private void notifyRunning()
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, NOTIFICATION_RUNNING, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this) //
+        .setSmallIcon(R.drawable.ic_launcher) //
+        .setContentTitle("Title: Running") //
+        .setContentText("Text: Running") //
+        .setContentInfo("Info: Running") //
+        .setTicker("Ticker: Running") //
+        .setContentIntent(pi) //
+        .setOngoing(true) //
+        .build();
+        mNotificationManager.notify(NOTIFICATION_RUNNING, notification);
     }
 
     public void registerMediaButtonEventReceiver()

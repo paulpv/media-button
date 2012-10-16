@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +27,7 @@
             <!--
                         This priority is higher than is supposed to be used for user apps, 
                         but we need to beat out other receivers since we're trying to manage it all ourselves. 
-                        Besides, WinAmp uses this priority (that's why we can't beat it)
+                        Besides, WinAmp uses this priority (that's why we can't beat it)
             -->
             <intent-filter android:priority="2147483647" >
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
