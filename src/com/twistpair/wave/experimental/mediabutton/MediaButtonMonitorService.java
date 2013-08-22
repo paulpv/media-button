@@ -35,12 +35,12 @@ public class MediaButtonMonitorService //
     private static class SettingsObserver //
                     extends ContentObserver
     {
-        private static final String       TAG                   = SettingsObserver.class.getSimpleName();
+        private static final String             TAG                   = SettingsObserver.class.getSimpleName();
 
-        private static final String       MEDIA_BUTTON_RECEIVER = "media_button_receiver";
+        private static final String             MEDIA_BUTTON_RECEIVER = "media_button_receiver";
 
-        private ContentResolver           mContentResolver;
-        private MediaButtonMonitorService mMonitorService;
+        private final ContentResolver           mContentResolver;
+        private final MediaButtonMonitorService mMonitorService;
 
         SettingsObserver(MediaButtonMonitorService monitorService)
         {
